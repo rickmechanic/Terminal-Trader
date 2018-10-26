@@ -17,7 +17,7 @@ def apiget(tick, url="https://api.iextrading.com/1.0/stock/{}/quote"):
     return price
 
 class OpenCursor:
-    
+
     def __init__(self, db=DBNAME, *args, **kwargs):
         self.conn = sqlite3.connect(db, *args, **kwargs)
         self.conn.row_factory = sqlite3.Row  # access fetch results by col name
@@ -189,7 +189,7 @@ class Account:
     def increase_position(self, ticker, amount):
         pos = self.getposition(ticker)
         if not pos:
-            pos = Position(account_pk=self.pk, ticker=self.ticker, amount=0)
+            pos = Position(account_pk=self.pk, ticker=ticker, amount=0)
         pos.amount += amount
         pos.save()
     
@@ -240,7 +240,17 @@ class Account:
         except ValueError:
             return None
     
-    def buy()
+    def buy(self, ticker, volume, price=None):
+        if price is None:
+            price = apiget(ticker)
+        try:
+            increase_position(ticker, amount=volume)
+            trade=Trade(account_pk=self.pk, ticker=ticker, volume=volume, price=price)
+            self.balance += volume*price
+            trade.save()
+            self.save()
+        except ValueError:
+            return None
             
 
 
