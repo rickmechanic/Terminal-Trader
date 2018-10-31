@@ -14,7 +14,7 @@ SQL = """
 CREATE TABLE accounts(
     pk INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR,
-    pass_hash VARCHAR,
+    pass_hash VARCHAR(128),
     balance FLOAT,
     type VARCHAR(4)
 ); """
