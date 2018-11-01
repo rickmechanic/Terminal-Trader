@@ -400,6 +400,7 @@ def ticker_cap(string):
     return ticker
     
 def run():
+    view.clear()
     initialmenu()
 
 while __name__ == "__main__":

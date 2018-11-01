@@ -204,7 +204,7 @@ class Account:
                 return None
             pos = Position()
         return pos.set_from_row(row)
-    
+
     def getposition_display(self, row, price):
         if not row:
             return False

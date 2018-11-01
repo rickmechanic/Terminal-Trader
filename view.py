@@ -1,8 +1,11 @@
 from getpass import getpass
+import os
+
+def clear():
+    os.system("clear")
 
 """ INITIAL MENU """
 def initialmenu():
-    """prints initial menu"""
     print('\n')
     print("*"*(len("welcome to terminal trader")+4))
     print("* WELCOME TO TERMINAL TRADER *")
