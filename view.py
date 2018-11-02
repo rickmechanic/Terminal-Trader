@@ -110,6 +110,24 @@ def loginmenu(user):
     print('\n')
     print("To return to main menu, type 'exit'")
 
+def adminmenu(user):
+    print('\n')
+    print("Hello {}!".format(user.username))
+    print('\n')
+    print("Main Menu")
+    print("-"*len("Main Menu"))
+    print("1. View balance")
+    print("2. Add funds")
+    print("3. View portfolio")
+    print("4. View transaction history")
+    print("5. Check stock prices")
+    print("6. Execute trade")
+    print("7. View Accounts")
+    print("8. Quit")
+    print('\n')
+    print("To return to main menu, type 'exit'")
+
+
 def loginmenu_choice():
     choice = input("Please make a selection: ").strip()
     return choice
@@ -322,6 +340,12 @@ def stock_pick():
 def stock_doesnt_exist():
     print('\n')
     print("ERROR: Stock doesn't exist, ticker was incorrect, or connection timed out")
+    print('\n')
+
+def showaccounts(accounts):
+    print('\n')
+    for i in accounts:
+        print(i)
     print('\n')
 
 

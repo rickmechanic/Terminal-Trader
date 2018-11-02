@@ -77,6 +77,30 @@ def login():
     return loginmenu(u)
 
 def loginmenu(user):
+    if user.acct_type == "ADMN":
+        view.adminmenu(user)
+        choice = view.loginmenu_choice()
+        while choice not in ["exit", "1", "2", "3", "4", "5", "6", "7", "8"]:
+            view.wrongchoice()
+            choice = view.loginmenu_choice()
+        if choice == "exit":
+            initialmenu()
+        if choice == "1":
+            viewbalance(user)
+        if choice == "2":
+            addfunds(user)
+        if choice == "3":
+            viewportfolio(user)
+        if choice == "4":
+            viewtransactions(user)
+        if choice == "5":
+            stockprices(user)
+        if choice == "6":
+            executetrade(user)
+        if choice == "7":
+            adminaccountviewer(user)
+        if choice == "8":
+            exit()
     view.loginmenu(user)
     choice = view.loginmenu_choice()
     while choice not in ["exit", "1", "2", "3", "4", "5", "6", "7"]:
@@ -280,6 +304,10 @@ def executetrade(user):
         if choice == "n":
             view.trade_cancelled()
             return returnloop(user)
+def adminaccountviewer(user):
+    accounts = user.getaccounts()
+    view.showaccounts(accounts)
+    return returnloop(user)
 def exit():
     view.goodbye()
     quit()

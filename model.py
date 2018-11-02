@@ -8,7 +8,7 @@ import tzlocal
 
 local_timezone = tzlocal.get_localzone()
 
-SALT = "!$33gl3d33g"
+SALT = "!$m33gl3d33g"
 
 DBNAME = "ttrader.db"
 
@@ -90,11 +90,12 @@ class OpenCursor:
 
 class Account:
 
-    def __init__(self, username=None, pass_hash=None, balance=None, pk=None):
+    def __init__(self, username=None, pass_hash=None, balance=None, acct_type=None, pk=None):
         self.pk = pk
         self.username = username
         self.pass_hash = pass_hash
         self.balance = balance
+        self.acct_type = acct_type
     
     def __bool__(self):
         return bool(self.pk)
@@ -103,18 +104,18 @@ class Account:
         with OpenCursor() as cur:
             if not self.pk:
                 SQL = """
-                INSERT INTO accounts(username, pass_hash, balance)
-                VALUES(?, ?, ?);
+                INSERT INTO accounts(username, pass_hash, balance, type)
+                VALUES(?, ?, ?, ?);
                 """
-                cur.execute(SQL, (self.username, self.pass_hash, self.balance))
+                cur.execute(SQL, (self.username, self.pass_hash, self.balance, self.acct_type))
                 self.pk = cur.lastrowid
 
             else:
                 SQL = """
-                UPDATE accounts SET username=?, pass_hash=?, balance=? WHERE
+                UPDATE accounts SET username=?, pass_hash=?, balance=?, type=? WHERE
                 pk=?;
                 """
-                cur.execute(SQL, (self.username, self.pass_hash, self.balance,
+                cur.execute(SQL, (self.username, self.pass_hash, self.balance, self.acct_type,
                                   self.pk))
 
     def username_exists_check(self, username):
@@ -147,6 +148,7 @@ class Account:
         self.username = row["username"]
         self.pass_hash = row["pass_hash"]
         self.balance = row["balance"]
+        self.acct_type = row["type"]
         return self
 
     def set_from_pk(self, pk):
@@ -157,6 +159,28 @@ class Account:
             row = cur.fetchone()
         return self.set_from_row(row)
     
+    def getaccounts(self):
+        results = []
+        with OpenCursor() as cur:
+            SQL = """
+            SELECT * FROM accounts """
+            cur.execute(SQL)
+            rows = cur.fetchall()
+            for row in rows:
+                user = Account()
+                user.set_from_row(row)
+                user_final = "User: {}, Balance: ${}".format(user.username, user.balance)
+                results.append(user_final)
+                SQL = """ SELECT * FROM positions WHERE account_pk=? """
+                cur.execute(SQL, (user.pk,))
+                poss = cur.fetchall()
+                for pos in poss:
+                    position = Position()
+                    position.set_from_row(pos)
+                    position_final = "    {} - {} shares".format(position.ticker, position.amount)
+                    results.append(position_final)
+        return results
+
     def getbalance(self):
         balance = str(round(self.balance,2))
         if balance[-1] == "0":
@@ -318,6 +342,8 @@ class Account:
         if result < volume:
             return False
         return True
+
+
 
 class Trade:
 
